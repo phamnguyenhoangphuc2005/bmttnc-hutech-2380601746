@@ -3,9 +3,11 @@ class RailFenceCipher:
         pass
 
     def rail_fence_encrypt(self, plain_text, num_rails):
+        # Tạo mảng rail
         rails = [[] for _ in range(num_rails)]
         rail_index = 0
-        direction = 1  # 1: down, -1: up
+        direction = 1  # 1: xuống, -1: lên
+
         for char in plain_text:
             rails[rail_index].append(char)
             if rail_index == 0:
@@ -13,10 +15,13 @@ class RailFenceCipher:
             elif rail_index == num_rails - 1:
                 direction = -1
             rail_index += direction
+
+        # Nối các rail lại thành cipher_text
         cipher_text = ''.join(''.join(rail) for rail in rails)
         return cipher_text
 
     def rail_fence_decrypt(self, cipher_text, num_rails):
+        # Tính độ dài từng rail
         rail_lengths = [0] * num_rails
         rail_index = 0
         direction = 1
@@ -29,16 +34,17 @@ class RailFenceCipher:
                 direction = -1
             rail_index += direction
 
+        # Tách cipher_text thành các rail
         rails = []
         start = 0
         for length in rail_lengths:
             rails.append(cipher_text[start:start + length])
             start += length
 
+        # Đọc lại plaintext theo zigzag
         plain_text = ""
         rail_index = 0
         direction = 1
-
         for _ in range(len(cipher_text)):
             plain_text += rails[rail_index][0]
             rails[rail_index] = rails[rail_index][1:]
