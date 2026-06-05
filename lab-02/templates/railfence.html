@@ -102,15 +102,16 @@
         </div>
 
         <div class="hero">
-            <h1>RailFence Cipher</h1>
+            <span class="eyebrow">Mã hoá &amp; Giải mã</span>
+            <h1>Rail Fence Cipher</h1>
         </div>
 
         <div class="panels">
             <div class="panel enc">
                 <div class="panel-head"><span class="dot"></span>ENCRYPTION</div>
                 <form id="formEncrypt" method="POST" action="/railfence/encrypt">
-                    <div class="field"><label>Plain text</label><input type="text" name="inputPlainText" placeholder="Nhập văn bản gốc" data-msg="Chỉ nhập chữ cái A-Z và khoảng trắng, không dấu, không chữ số!" required pattern="[A-Za-z ]+" autofocus/></div>
-                    <div class="field"><label>Key</label><input type="number" name="inputKeyPlain" placeholder="Số rail >= 2, vd: 3" data-msg="Số rail phải là số nguyên >= 2!" required min="2"/></div>
+                    <div class="field"><label>Plain text</label><input type="text" name="inputPlainText" placeholder="Nhập văn bản gốc" data-msg="Chỉ nhập chữ cái A-Z và khoảng trắng, không chữ số, không ký tự đặc biệt!" required pattern="[A-Za-z ]+" autofocus/></div>
+                    <div class="field"><label>Key</label><input type="number" name="inputKeyPlain" placeholder="Số rail >= 2 và <= độ dài văn bản, vd: 3" data-msg="Số rail phải là số nguyên dương >= 2!" required min="2" step="1"/></div>
                     <button type="submit" class="btn btn-enc">Encrypt</button>
                 </form>
                 <div class="result" id="resultEncrypt"></div>
@@ -119,42 +120,71 @@
             <div class="panel dec">
                 <div class="panel-head"><span class="dot"></span>DECRYPTION</div>
                 <form id="formDecrypt" method="POST" action="/railfence/decrypt">
-                    <div class="field"><label>Cipher text</label><input type="text" name="inputCipherText" placeholder="Nhập văn bản mã hoá" data-msg="Chỉ nhập chữ cái A-Z và khoảng trắng, không dấu, không chữ số!" required pattern="[A-Za-z ]+"/></div>
-                    <div class="field"><label>Key</label><input type="number" name="inputKeyCipher" placeholder="Số rail >= 2, vd: 3" data-msg="Số rail phải là số nguyên >= 2!" required min="2"/></div>
+                    <div class="field"><label>Cipher text</label><input type="text" name="inputCipherText" placeholder="Nhập văn bản mã hoá" data-msg="Chỉ nhập chữ cái A-Z và khoảng trắng, không chữ số, không ký tự đặc biệt!" required pattern="[A-Za-z ]+"/></div>
+                    <div class="field"><label>Key</label><input type="number" name="inputKeyCipher" placeholder="Số rail >= 2 và <= độ dài văn bản, vd: 3" data-msg="Số rail phải là số nguyên dương >= 2!" required min="2" step="1"/></div>
                     <button type="submit" class="btn btn-dec">Decrypt</button>
                 </form>
                 <div class="result" id="resultDecrypt"></div>
             </div>
         </div>
 
-        <footer>Trường Đại học Công nghệ TP.HCM (HUTECH)</footer>
+        <footer>Đại học Công nghệ TP.HCM (HUTECH) · An toàn thông tin nâng cao</footer>
     </div>
     <script>
-        // Thông báo lỗi tiếng Việt khi nhập sai
+        // Rail Fence: 2 <= số rail <= độ dài văn bản
+        function crossCheck(text, key) {
+            var n = text.trim().length;
+            var r = parseInt(key, 10);
+            if (r > n) return 'Số rail không được lớn hơn độ dài văn bản (2 <= r <= n)!';
+            return '';
+        }
+    </script>
+    <script>
+        // Hiện thông báo lỗi tiếng Việt ngay tại ô đang nhập
         document.querySelectorAll('input[data-msg]').forEach(function (inp) {
             inp.addEventListener('invalid', function () {
-                inp.setCustomValidity(inp.validity.valueMissing
-                    ? 'Vui lòng không để trống ô này!' : inp.dataset.msg);
+                if (inp.validity.valueMissing) {
+                    inp.setCustomValidity('Vui lòng không được để trống ô này!');
+                } else if (inp.validity.customError) {
+                    /* giữ nguyên thông báo đã đặt thủ công (ràng buộc liên quan key & văn bản) */
+                } else {
+                    inp.setCustomValidity(inp.dataset.msg);
+                }
             });
             inp.addEventListener('input', function () { inp.setCustomValidity(''); });
         });
-        // Gửi form bằng AJAX và hiện kết quả ngay trên trang
+
+        function fields(form) {
+            return {
+                text: form.querySelector('input[name="inputPlainText"], input[name="inputCipherText"]'),
+                key:  form.querySelector('input[name="inputKeyPlain"], input[name="inputKeyCipher"]')
+            };
+        }
+
+        function validate(form) {
+            var f = fields(form);
+            f.text.setCustomValidity('');
+            f.key.setCustomValidity('');
+            // Lỗi của từng ô (rỗng / sai định dạng) -> báo ngay tại ô đó
+            if (!form.reportValidity()) return false;
+            // Ràng buộc liên quan key & văn bản -> luôn báo tại ô KEY
+            if (typeof crossCheck === 'function') {
+                var msg = crossCheck(f.text.value, f.key.value);
+                if (msg) { f.key.setCustomValidity(msg); f.key.reportValidity(); return false; }
+            }
+            return true;
+        }
+
         function wire(formId, resultId) {
             var form = document.getElementById(formId);
-            var box = document.getElementById(resultId);
+            var box  = document.getElementById(resultId);
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
-                if (!form.reportValidity()) return;
+                if (!validate(form)) return;
                 fetch(form.action, { method: 'POST', body: new URLSearchParams(new FormData(form)) })
                     .then(function (r) { return r.text(); })
-                    .then(function (html) {
-                        box.innerHTML = '<span class="tag">Kết quả</span>' + html;
-                        box.classList.add('show');
-                    })
-                    .catch(function (err) {
-                        box.innerHTML = '<span class="tag">Lỗi</span>' + err;
-                        box.classList.add('show');
-                    });
+                    .then(function (html) { box.innerHTML = '<span class="tag">Kết quả</span>' + html; box.classList.add('show'); })
+                    .catch(function (err) { box.innerHTML = '<span class="tag">Lỗi</span>' + err; box.classList.add('show'); });
             });
         }
         wire('formEncrypt', 'resultEncrypt');

@@ -3,19 +3,19 @@ class PlayFairCipher:
         pass
 
     def create_playfair_matrix(self, key):
-        key = key.replace("J", "I")  # Chuyển "J" thành "I" trong khóa
-        key = key.upper()
-        key_set = set(key)
-        alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"  # Chỉ dùng I, không có J
-        remaining_letters = [letter for letter in alphabet if letter not in key_set]
-        matrix = list(key)
-        
-        for letter in remaining_letters:
-            matrix.append(letter)
-            if len(matrix) == 25:
-                break
-        
-        playfair_matrix = [matrix[i:i+5] for i in range(0, len(matrix), 5)]
+        # Chuẩn hoá khoá: viết hoa, gộp J -> I
+        key = key.upper().replace("J", "I")
+        alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"  # 25 chữ cái, I dùng chung cho J
+        # Loại bỏ ký tự trùng lặp trong khoá (giữ thứ tự xuất hiện), chỉ nhận chữ cái hợp lệ
+        seen = []
+        for ch in key:
+            if ch in alphabet and ch not in seen:
+                seen.append(ch)
+        # Thêm các chữ cái còn lại để đủ đúng 25 ký tự khác nhau
+        for ch in alphabet:
+            if ch not in seen:
+                seen.append(ch)
+        playfair_matrix = [seen[i:i+5] for i in range(0, 25, 5)]
         return playfair_matrix
 
     def find_letter_coords(self, matrix, letter):
@@ -26,8 +26,7 @@ class PlayFairCipher:
 
     def playfair_encrypt(self, plain_text, matrix):
         # Chuyển "J" thành "I" trong văn bản đầu vào
-        plain_text = plain_text.replace("J", "I")
-        plain_text = plain_text.upper()
+        plain_text = plain_text.upper().replace("J", "I")
         encrypted_text = ""
 
         for i in range(0, len(plain_text), 2):
@@ -47,7 +46,7 @@ class PlayFairCipher:
         return encrypted_text
 
     def playfair_decrypt(self, cipher_text, matrix):
-        cipher_text = cipher_text.upper()
+        cipher_text = cipher_text.upper().replace("J", "I")
         decrypted_text = ""
         decrypted_text1 = ""
 
