@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Caesar Cipher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#0b1120; --card:#16213a; --line:#25344f; --text:#e8edf7;
+            --muted:#94a3c4; --accent:#f5b841; --accent-soft:rgba(245,184,65,.12);
+            --cyan:#3dd6c4; --cyan-soft:rgba(61,214,196,.12);
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body {
+            font-family:'Be Vietnam Pro',sans-serif; color:var(--text);
+            background:
+                radial-gradient(1100px 600px at 85% -10%, rgba(61,214,196,.10), transparent 60%),
+                radial-gradient(900px 500px at 5% 110%, rgba(245,184,65,.10), transparent 60%),
+                var(--bg);
+            min-height:100vh; padding:48px 20px; position:relative; overflow-x:hidden;
+        }
+        body::before {
+            content:""; position:fixed; inset:0;
+            background-image:
+                linear-gradient(var(--line) 1px,transparent 1px),
+                linear-gradient(90deg,var(--line) 1px,transparent 1px);
+            background-size:46px 46px; opacity:.16;
+            -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 100%);
+            mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 100%);
+            pointer-events:none;
+        }
+        .shell { width:100%; max-width:920px; margin:0 auto; position:relative; z-index:1;
+            animation:rise .6s cubic-bezier(.2,.7,.2,1) both; }
+        .topbar {
+            display:flex; align-items:center; justify-content:space-between; gap:16px;
+            padding:13px 20px; background:rgba(22,33,58,.6); border:1px solid var(--line);
+            border-radius:14px; backdrop-filter:blur(8px); margin-bottom:28px;
+        }
+        .topbar .left { display:flex; align-items:center; gap:18px; }
+        .topbar img { height:34px; width:auto; display:block; }
+        .back { color:var(--cyan); text-decoration:none; font-size:14px; font-weight:500;
+            white-space:nowrap; transition:opacity .2s; }
+        .back:hover { opacity:.7; }
+        .badge-id { font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--muted);
+            text-align:right; line-height:1.5; }
+        .badge-id b { color:var(--text); font-weight:700; }
+        .badge-id span { color:var(--accent); }
+        .hero { text-align:center; margin-bottom:34px; }
+        .hero .eyebrow { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em;
+            text-transform:uppercase; color:var(--cyan); display:inline-block; padding:5px 13px;
+            border:1px solid var(--line); border-radius:999px; background:var(--cyan-soft); margin-bottom:16px; }
+        .hero h1 { font-family:'Lora',serif; font-weight:700; font-size:clamp(26px,4.5vw,38px);
+            letter-spacing:-.01em; }
+        .panels { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+        @media (max-width:720px){ .panels { grid-template-columns:1fr; } }
+        .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px;
+            opacity:0; animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards; }
+        .panel:nth-child(1){ animation-delay:.10s; } .panel:nth-child(2){ animation-delay:.20s; }
+        .panel-head { display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace;
+            font-size:13px; font-weight:700; letter-spacing:.14em; margin-bottom:20px; }
+        .dot { width:9px; height:9px; border-radius:50%; }
+        .enc .dot { background:var(--accent); box-shadow:0 0 12px var(--accent); }
+        .dec .dot { background:var(--cyan); box-shadow:0 0 12px var(--cyan); }
+        .enc .panel-head { color:var(--accent); } .dec .panel-head { color:var(--cyan); }
+        .field { margin-bottom:16px; }
+        .field label { display:block; font-size:13px; color:var(--muted); margin-bottom:7px; font-weight:500; }
+        .field input { width:100%; padding:11px 14px; background:#0e1626; color:var(--text);
+            border:1px solid var(--line); border-radius:10px; font-family:'Be Vietnam Pro',sans-serif;
+            font-size:14px; transition:border-color .2s, box-shadow .2s; }
+        .field input::placeholder { color:#5b6b8c; }
+        .enc .field input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+        .dec .field input:focus { outline:none; border-color:var(--cyan); box-shadow:0 0 0 3px var(--cyan-soft); }
+        .btn { width:100%; padding:12px; border:none; border-radius:10px; font-family:'Be Vietnam Pro',sans-serif;
+            font-size:14px; font-weight:700; cursor:pointer; color:#0b1120; transition:transform .15s, filter .15s; }
+        .btn:hover { transform:translateY(-2px); filter:brightness(1.08); }
+        .btn:active { transform:translateY(0); }
+        .btn-enc { background:var(--accent); } .btn-dec { background:var(--cyan); }
+        .result { margin-top:18px; padding:14px 16px; border-radius:10px; background:#0e1626;
+            border:1px solid var(--line); border-left:3px solid var(--accent);
+            font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; color:var(--text);
+            word-break:break-word; display:none; }
+        .dec .result { border-left-color:var(--cyan); }
+        .result.show { display:block; animation:rise .35s ease both; }
+        .result .tag { display:block; font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+            color:var(--muted); margin-bottom:6px; }
+        footer { margin-top:30px; text-align:center; color:var(--muted); font-size:12px;
+            font-family:'JetBrains Mono',monospace; letter-spacing:.04em; }
+        @keyframes rise { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <div class="left">
+                <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH"/>
+                <a class="back" href="/">&larr; Trang chủ</a>
+            </div>
+            <div class="badge-id"><b>PHẠM NGUYỄN HOÀNG PHÚC</b><br/>MSSV: <span>2380601746</span></div>
+        </div>
+
+        <div class="hero">
+            <h1>Caesar Cipher</h1>
+        </div>
+
+        <div class="panels">
+            <div class="panel enc">
+                <div class="panel-head"><span class="dot"></span>ENCRYPTION</div>
+                <form id="formEncrypt" method="POST" action="/encrypt">
+                    <div class="field"><label>Plain text</label><input type="text" name="inputPlainText" placeholder="Nhập văn bản gốc" data-msg="Chỉ nhập chữ cái A-Z, không dấu, không khoảng trắng, không chữ số!" required pattern="[A-Za-z]+" autofocus/></div>
+                    <div class="field"><label>Key</label><input type="number" name="inputKeyPlain" placeholder="Số nguyên, vd: 5" data-msg="Khoá phải là số nguyên!" required min="0"/></div>
+                    <button type="submit" class="btn btn-enc">Encrypt</button>
+                </form>
+                <div class="result" id="resultEncrypt"></div>
+            </div>
+
+            <div class="panel dec">
+                <div class="panel-head"><span class="dot"></span>DECRYPTION</div>
+                <form id="formDecrypt" method="POST" action="/decrypt">
+                    <div class="field"><label>Cipher text</label><input type="text" name="inputCipherText" placeholder="Nhập văn bản mã hoá" data-msg="Chỉ nhập chữ cái A-Z, không dấu, không khoảng trắng, không chữ số!" required pattern="[A-Za-z]+"/></div>
+                    <div class="field"><label>Key</label><input type="number" name="inputKeyCipher" placeholder="Số nguyên, vd: 5" data-msg="Khoá phải là số nguyên!" required min="0"/></div>
+                    <button type="submit" class="btn btn-dec">Decrypt</button>
+                </form>
+                <div class="result" id="resultDecrypt"></div>
+            </div>
+        </div>
+
+        <footer>Đại học Công nghệ TP.HCM (HUTECH)</footer>
+    </div>
+    <script>
+        // Thông báo lỗi tiếng Việt khi nhập sai
+        document.querySelectorAll('input[data-msg]').forEach(function (inp) {
+            inp.addEventListener('invalid', function () {
+                inp.setCustomValidity(inp.validity.valueMissing
+                    ? 'Vui lòng không để trống ô này!' : inp.dataset.msg);
+            });
+            inp.addEventListener('input', function () { inp.setCustomValidity(''); });
+        });
+        // Gửi form bằng AJAX và hiện kết quả ngay trên trang
+        function wire(formId, resultId) {
+            var form = document.getElementById(formId);
+            var box = document.getElementById(resultId);
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (!form.reportValidity()) return;
+                fetch(form.action, { method: 'POST', body: new URLSearchParams(new FormData(form)) })
+                    .then(function (r) { return r.text(); })
+                    .then(function (html) {
+                        box.innerHTML = '<span class="tag">Kết quả</span>' + html;
+                        box.classList.add('show');
+                    })
+                    .catch(function (err) {
+                        box.innerHTML = '<span class="tag">Lỗi</span>' + err;
+                        box.classList.add('show');
+                    });
+            });
+        }
+        wire('formEncrypt', 'resultEncrypt');
+        wire('formDecrypt', 'resultDecrypt');
+    </script>
+</body>
+</html>

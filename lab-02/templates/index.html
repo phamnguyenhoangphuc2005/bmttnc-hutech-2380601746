@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thực hành An toàn thông tin nâng cao</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1120;
+            --card: #16213a;
+            --card-hover: #1c2a48;
+            --line: #25344f;
+            --text: #e8edf7;
+            --muted: #94a3c4;
+            --accent: #f5b841;
+            --accent-soft: rgba(245, 184, 65, 0.12);
+            --cyan: #3dd6c4;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1100px 600px at 85% -10%, rgba(61, 214, 196, 0.10), transparent 60%),
+                radial-gradient(900px 500px at 5% 110%, rgba(245, 184, 65, 0.10), transparent 60%),
+                var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 46px 46px;
+            opacity: 0.18;
+            -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 40%, transparent 100%);
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 40%, transparent 100%);
+            pointer-events: none;
+        }
+        .shell {
+            width: 100%;
+            max-width: 860px;
+            position: relative;
+            z-index: 1;
+            animation: rise 0.7s cubic-bezier(.2,.7,.2,1) both;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px;
+            background: rgba(22, 33, 58, 0.6);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            backdrop-filter: blur(8px);
+            margin-bottom: 30px;
+        }
+        .topbar img { height: 38px; width: auto; display: block; }
+        .badge-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: var(--muted);
+            text-align: right;
+            line-height: 1.5;
+        }
+        .badge-id b { color: var(--text); font-weight: 700; }
+        .badge-id span { color: var(--accent); }
+        .hero { text-align: center; margin-bottom: 14px; }
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            display: inline-block;
+            padding: 6px 14px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(61, 214, 196, 0.06);
+            margin-bottom: 22px;
+        }
+        .hero h1 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            font-size: clamp(28px, 5vw, 44px);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+        }
+        .hero h1 .glow { color: var(--accent); }
+        .hero p.sub {
+            color: var(--muted);
+            margin-top: 14px;
+            font-size: 15.5px;
+            max-width: 540px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 40px;
+        }
+        @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+        .card {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 22px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+            transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
+            opacity: 0;
+            animation: rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+        }
+        .card:nth-child(1) { animation-delay: .10s; }
+        .card:nth-child(2) { animation-delay: .18s; }
+        .card:nth-child(3) { animation-delay: .26s; }
+        .card:nth-child(4) { animation-delay: .34s; }
+        .card::after {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform .25s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            border-color: var(--accent);
+            box-shadow: 0 18px 40px -22px rgba(245, 184, 65, 0.5);
+        }
+        .card:hover::after { transform: scaleY(1); }
+        .glyph {
+            flex: none;
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(245, 184, 65, 0.25);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--accent);
+        }
+        .card-body h3 {
+            font-family: 'Lora', serif;
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .card-body p {
+            color: var(--muted);
+            font-size: 13.5px;
+            line-height: 1.55;
+        }
+        .card .arrow {
+            position: absolute;
+            right: 18px;
+            top: 20px;
+            color: var(--muted);
+            transition: transform .25s ease, color .25s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .card:hover .arrow { transform: translateX(4px); color: var(--accent); }
+        footer {
+            margin-top: 34px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12.5px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.04em;
+        }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH"/>
+            <div class="badge-id">
+                <b>PHẠM NGUYỄN HOÀNG PHÚC</b><br/>
+                MSSV: <span>2380601746</span>
+            </div>
+        </div>
+
+        <div class="hero">
+            <h1>Bảo mật thông tin nâng cao<br/>
+        </div>
+
+        <div class="grid">
+            <a class="card" href="/caesar">
+                <div class="glyph">C</div>
+                <div class="card-body">
+                    <h3>Caesar Cipher</h3>
+                </div>
+                <span class="arrow">&rarr;</span>
+            </a>
+            <a class="card" href="/vigenere">
+                <div class="glyph">V</div>
+                <div class="card-body">
+                    <h3>Vigen&egrave;re Cipher</h3>
+                </div>
+                <span class="arrow">&rarr;</span>
+            </a>
+            <a class="card" href="/railfence">
+                <div class="glyph">R</div>
+                <div class="card-body">
+                    <h3>RailFence Cipher</h3>
+                </div>
+                <span class="arrow">&rarr;</span>
+            </a>
+            <a class="card" href="/playfair">
+                <div class="glyph">P</div>
+                <div class="card-body">
+                    <h3>Playfair Cipher</h3>
+                </div>
+                <span class="arrow">&rarr;</span>
+            </a>
+        </div>
+
+        <footer>Đại học Công nghệ TP.HCM (HUTECH)</footer>
+    </div>
+</body>
+</html>
