@@ -9,9 +9,9 @@ class RailFenceLogic:
     @staticmethod
     def encrypt(text, key):
 
-        if key < 2 or key > len(text):
+        if key < 2 or key >= len(text):
             raise ValueError(
-                f"Key phải thỏa mãn 2 ≤ key ≤ {len(text)}"
+                f"Key phải thỏa mãn 2 ≤ key < {len(text)}"
             )
 
         rail = [['\n' for _ in range(len(text))]
@@ -46,9 +46,9 @@ class RailFenceLogic:
     @staticmethod
     def decrypt(cipher, key):
 
-        if key < 2 or key > len(cipher):
+        if key < 2 or key >= len(cipher):
             raise ValueError(
-                f"Key phải thỏa mãn 2 ≤ key ≤ {len(cipher)}"
+                f"Key phải thỏa mãn 2 ≤ key < {len(cipher)}"
             )
 
         rail = [['\n' for _ in range(len(cipher))]
@@ -122,11 +122,19 @@ class RailFenceApp(QMainWindow):
         text = self.ui.plainTextEdit.toPlainText().strip()
         key_text = self.ui.plainTextEdit_2.toPlainText().strip()
 
-        if not text or not key_text:
+        if not text:
             QMessageBox.warning(
                 self,
                 "Warning",
-                "Vui lòng nhập Text và Key"
+                "Vui lòng nhập Text"
+            )
+            return
+
+        if not key_text:
+            QMessageBox.warning(
+                self,
+                "Warning",
+                "Vui lòng nhập Key"
             )
             return
 
@@ -140,11 +148,11 @@ class RailFenceApp(QMainWindow):
             )
             return
 
-        if key < 2 or key > len(text):
+        if key < 2 or key >= len(text):
             QMessageBox.warning(
                 self,
                 "Warning",
-                f"Key phải thỏa mãn 2 ≤ key ≤ {len(text)}"
+                f"Key phải thỏa mãn 2 ≤ key < {len(text)}"
             )
             return
 
@@ -163,11 +171,19 @@ class RailFenceApp(QMainWindow):
         cipher = self.ui.plainTextEdit_3.toPlainText().strip()
         key_text = self.ui.plainTextEdit_2.toPlainText().strip()
 
-        if not cipher or not key_text:
+        if not cipher:
             QMessageBox.warning(
                 self,
                 "Warning",
-                "Vui lòng nhập Cipher Text và Key"
+                "Vui lòng nhập Cipher Text"
+            )
+            return
+
+        if not key_text:
+            QMessageBox.warning(
+                self,
+                "Warning",
+                "Vui lòng nhập Key"
             )
             return
 
@@ -181,11 +197,11 @@ class RailFenceApp(QMainWindow):
             )
             return
 
-        if key < 2 or key > len(cipher):
+        if key < 2 or key >= len(cipher):
             QMessageBox.warning(
                 self,
                 "Warning",
-                f"Key phải thỏa mãn 2 ≤ key ≤ {len(cipher)}"
+                f"Key phải thỏa mãn 2 ≤ key < {len(cipher)}"
             )
             return
 

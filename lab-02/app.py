@@ -60,19 +60,29 @@ def railfence():
 
 @app.route("/railfence/encrypt", methods=['POST'])
 def railfence_encrypt():
-    text = request.form['inputPlainText']
-    key = int(request.form['inputKeyPlain'])
+    text = request.form.get('inputPlainText', '')
+    key = request.form.get('inputKeyPlain', '')
+
     cipher = RailFenceCipher()
-    encrypted_text = cipher.rail_fence_encrypt(text, key)
-    return f"text: {text}<br/>key: {key}<br/>encrypted text: {encrypted_text}"
+
+    try:
+        encrypted_text = cipher.rail_fence_encrypt(text, key)
+        return f"text: {text}<br/>key: {key}<br/>encrypted text: {encrypted_text}"
+    except Exception as e:
+        return str(e), 400
 
 @app.route("/railfence/decrypt", methods=['POST'])
 def railfence_decrypt():
-    text = request.form['inputCipherText']
-    key = int(request.form['inputKeyCipher'])
+    text = request.form.get('inputCipherText', '')
+    key = request.form.get('inputKeyCipher', '')
+
     cipher = RailFenceCipher()
-    decrypted_text = cipher.rail_fence_decrypt(text, key)
-    return f"text: {text}<br/>key: {key}<br/>decrypted text: {decrypted_text}"
+
+    try:
+        decrypted_text = cipher.rail_fence_decrypt(text, key)
+        return f"text: {text}<br/>key: {key}<br/>decrypted text: {decrypted_text}"
+    except Exception as e:
+        return str(e), 400
 
 # ============ PLAYFAIR ============
 @app.route("/playfair")
