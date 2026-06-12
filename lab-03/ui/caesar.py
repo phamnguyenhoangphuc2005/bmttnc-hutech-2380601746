@@ -62,6 +62,18 @@ class Ui_MainWindow(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(550, 510, 75, 23))
         self.pushButton_2.setObjectName("pushButton_2")
+
+        # Thông tin cá nhân
+        self.studentInfo = QtWidgets.QLabel(self.centralwidget)
+        self.studentInfo.setGeometry(QtCore.QRect(120, 455, 560, 31))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        self.studentInfo.setFont(font)
+        self.studentInfo.setAlignment(QtCore.Qt.AlignCenter)
+        self.studentInfo.setText("Tên: PHẠM NGUYỄN HOÀNG PHÚC    |    MSSV: 2380601746")
+        self.studentInfo.setObjectName("studentInfo")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -77,6 +89,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.studentInfo.setText(_translate("MainWindow", "Tên: PHẠM NGUYỄN HOÀNG PHÚC    |    MSSV: 2380601746"))
         self.label.setText(_translate("MainWindow", "Caesar cipher"))
         self.label_2.setText(_translate("MainWindow", "plain text:"))
         self.label_3.setText(_translate("MainWindow", "key:"))

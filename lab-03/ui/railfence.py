@@ -44,4 +44,16 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QtCore.QRect(500, 500, 100, 40))
         self.pushButton_2.setText("Decrypt")
 
+
+        # Thông tin cá nhân
+        self.studentInfo = QtWidgets.QLabel(self.centralwidget)
+        self.studentInfo.setGeometry(QtCore.QRect(120, 455, 560, 31))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        self.studentInfo.setFont(font)
+        self.studentInfo.setAlignment(QtCore.Qt.AlignCenter)
+        self.studentInfo.setText("Tên: PHẠM NGUYỄN HOÀNG PHÚC    |    MSSV: 2380601746")
+        self.studentInfo.setObjectName("studentInfo")
+
         MainWindow.setCentralWidget(self.centralwidget)

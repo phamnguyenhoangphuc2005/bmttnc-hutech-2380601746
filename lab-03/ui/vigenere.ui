@@ -153,6 +153,29 @@
      </rect>
     </property>
    </widget>
+   <widget class="QLabel" name="studentInfo">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>455</y>
+      <width>560</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Tên: PHẠM NGUYỄN HOÀNG PHÚC    |    MSSV: 2380601746</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
