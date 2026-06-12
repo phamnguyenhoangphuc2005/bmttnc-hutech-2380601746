@@ -1,65 +1,92 @@
 import sys
-import requests
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
-from ui.vigenere import Ui_MainWindow
+# Đảm bảo đường dẫn import này đúng với cấu trúc thư mục của bạn
+from ui.vigenere import Ui_MainWindow 
 
+class VigenereLogic:
+    @staticmethod
+    def _validate_key(key):
+        key = key.strip()
+        if not key:
+            raise ValueError("Key không được rỗng")
+        if not key.isalpha():
+            raise ValueError("Key chỉ được chứa chữ cái A-Z")
+        return key.upper()
 
-class MyApp(QMainWindow):
+    @staticmethod
+    def encrypt(text, key):
+        key = VigenereLogic._validate_key(key)
+        result = []
+        j = 0
+        for c in text:
+            if c.isalpha():
+                # Lấy độ dời từ ký tự tương ứng của key
+                k = ord(key[j % len(key)]) - ord('A')
+                base = ord('A') if c.isupper() else ord('a')
+                result.append(chr((ord(c) - base + k) % 26 + base))
+                j += 1
+            else:
+                result.append(c)
+        return "".join(result)
+
+    @staticmethod
+    def decrypt(text, key):
+        key = VigenereLogic._validate_key(key)
+        result = []
+        j = 0
+        for c in text:
+            if c.isalpha():
+                k = ord(key[j % len(key)]) - ord('A')
+                base = ord('A') if c.isupper() else ord('a')
+                # +26 để đảm bảo không bị số âm trước khi chia lấy dư
+                result.append(chr((ord(c) - base - k + 26) % 26 + base))
+                j += 1
+            else:
+                result.append(c)
+        return "".join(result)
+
+class VigenereApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.ui.pushButton.clicked.connect(self.call_api_encrypt)
-        self.ui.pushButton_2.clicked.connect(self.call_api_decrypt)
+        # Kết nối sự kiện (Tên pushButton phải khớp với file ui/vigenere.py)
+        self.ui.pushButton.clicked.connect(self.handle_encrypt)
+        self.ui.pushButton_2.clicked.connect(self.handle_decrypt)
 
-    def call_api_encrypt(self):
-        url = "http://127.0.0.1:5000/api/vigenere/encrypt"
+    def handle_encrypt(self):
+        text = self.ui.plainTextEdit.toPlainText()
+        key = self.ui.plainTextEdit_2.toPlainText()
+        
+        if not text:
+            QMessageBox.warning(self, "Warning", "Vui lòng nhập Plain Text")
+            return
 
-        payload = {
-            "plain_text": self.ui.plainTextEdit.toPlainText(),
-            "key": self.ui.plainTextEdit_2.toPlainText()
-        }
+        try:
+            cipher = VigenereLogic.encrypt(text, key)
+            self.ui.plainTextEdit_3.setPlainText(cipher)
+            QMessageBox.information(self, "Success", "Mã hóa thành công!")
+        except ValueError as e:
+            QMessageBox.warning(self, "Warning", str(e))
 
-        response = requests.post(url, json=payload)
+    def handle_decrypt(self):
+        cipher = self.ui.plainTextEdit_3.toPlainText()
+        key = self.ui.plainTextEdit_2.toPlainText()
 
-        if response.status_code == 200:
-            data = response.json()
-            self.ui.plainTextEdit_3.setPlainText(data["encrypted_message"])
+        if not cipher:
+            QMessageBox.warning(self, "Warning", "Vui lòng nhập Cipher Text")
+            return
 
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
-            msg.setText("Encrypted Successfully")
-            msg.setWindowTitle("Success")
-            msg.exec_()
-        else:
-            print("Error while calling API")
-
-    def call_api_decrypt(self):
-        url = "http://127.0.0.1:5000/api/vigenere/decrypt"
-
-        payload = {
-            "cipher_text": self.ui.plainTextEdit_3.toPlainText(),
-            "key": self.ui.plainTextEdit_2.toPlainText()
-        }
-
-        response = requests.post(url, json=payload)
-
-        if response.status_code == 200:
-            data = response.json()
-            self.ui.plainTextEdit.setPlainText(data["decrypted_message"])
-
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
-            msg.setText("Decrypted Successfully")
-            msg.setWindowTitle("Success")
-            msg.exec_()
-        else:
-            print("Error while calling API")
-
+        try:
+            plain = VigenereLogic.decrypt(cipher, key)
+            self.ui.plainTextEdit.setPlainText(plain)
+            QMessageBox.information(self, "Success", "Giải mã thành công!")
+        except ValueError as e:
+            QMessageBox.warning(self, "Warning", str(e))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MyApp()
+    window = VigenereApp()
     window.show()
     sys.exit(app.exec_())
