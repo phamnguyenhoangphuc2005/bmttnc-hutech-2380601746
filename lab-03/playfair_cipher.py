@@ -213,6 +213,9 @@ class PlayfairApp(QMainWindow):
 
         plain = PlayfairLogic.decrypt(cipher_text, key)
 
+        if plain.endswith("X"):
+            plain = plain[:-1]
+
         self.ui.plainTextEdit.setPlainText(plain)
 
         QMessageBox.information(
@@ -220,8 +223,7 @@ class PlayfairApp(QMainWindow):
             "Success",
             "Decrypted Successfully"
         )
-
-
+        
 if __name__ == "__main__":
 
     app = QApplication(sys.argv)
