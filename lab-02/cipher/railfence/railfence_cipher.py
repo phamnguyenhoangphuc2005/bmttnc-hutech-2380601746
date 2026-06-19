@@ -3,9 +3,8 @@ class RailFenceCipher:
         pass
 
     def validate_text(self, text, text_name):
-        if text is None or text.strip() == "":
-            raise ValueError(f"{text_name} không được rỗng")
-        return text
+        # Không ràng buộc plaintext/ciphertext. Nếu None thì chuyển thành chuỗi rỗng.
+        return "" if text is None else text
 
     def validate_key(self, key, text_length, mode):
         if key is None or str(key).strip() == "":
@@ -21,9 +20,9 @@ class RailFenceCipher:
 
         if key >= text_length:
             if mode == "encrypt":
-                raise ValueError(f"Key phải < độ dài Text ({text_length})")
+                raise ValueError(f"Key phải nhỏ hơn số ký tự văn bản hiện tại ({text_length})")
             else:
-                raise ValueError(f"Key phải < độ dài Cipher Text ({text_length})")
+                raise ValueError(f"Key phải nhỏ hơn số ký tự văn bản hiện tại ({text_length})")
 
         return key
 

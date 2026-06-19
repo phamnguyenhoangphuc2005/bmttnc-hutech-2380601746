@@ -110,7 +110,7 @@
             <div class="panel enc">
                 <div class="panel-head"><span class="dot"></span>ENCRYPTION</div>
                 <form id="formEncrypt" method="POST" action="/playfair/encrypt">
-                    <div class="field"><label>Plain text</label><input type="text" name="inputPlainText" placeholder="Nhập văn bản gốc" data-msg="Chỉ nhập chữ cái A-Z, không khoảng trắng, không chữ số, không ký tự đặc biệt!" required pattern="[A-Za-z]+" autofocus/></div>
+                    <div class="field"><label>Plain text</label><input type="text" name="inputPlainText" placeholder="Nhập văn bản tự do" autofocus/></div>
                     <div class="field"><label>Key</label><input type="text" name="inputKeyPlain" placeholder="Chữ cái, vd: MONARCHY" data-msg="Khoá chỉ gồm chữ cái A-Z, không chữ số, không khoảng trắng, không ký tự đặc biệt!" required pattern="[A-Za-z]+"/></div>
                     <button type="submit" class="btn btn-enc">Encrypt</button>
                 </form>
@@ -120,7 +120,7 @@
             <div class="panel dec">
                 <div class="panel-head"><span class="dot"></span>DECRYPTION</div>
                 <form id="formDecrypt" method="POST" action="/playfair/decrypt">
-                    <div class="field"><label>Cipher text</label><input type="text" name="inputCipherText" placeholder="Nhập văn bản mã hoá" data-msg="Chỉ nhập chữ cái A-Z, không khoảng trắng, không chữ số, không ký tự đặc biệt!" required pattern="[A-Za-z]+"/></div>
+                    <div class="field"><label>Cipher text</label><input type="text" name="inputCipherText" placeholder="Nhập văn bản mã hoá tự do"/></div>
                     <div class="field"><label>Key</label><input type="text" name="inputKeyCipher" placeholder="Chữ cái, vd: MONARCHY" data-msg="Khoá chỉ gồm chữ cái A-Z, không chữ số, không khoảng trắng, không ký tự đặc biệt!" required pattern="[A-Za-z]+"/></div>
                     <button type="submit" class="btn btn-dec">Decrypt</button>
                 </form>
@@ -137,7 +137,7 @@
                 if (inp.validity.valueMissing) {
                     inp.setCustomValidity('Vui lòng không được để trống ô này!');
                 } else if (inp.validity.customError) {
-                    /* giữ nguyên thông báo đã đặt thủ công (ràng buộc liên quan key & văn bản) */
+                    /* giữ nguyên thông báo đã đặt thủ công */
                 } else {
                     inp.setCustomValidity(inp.dataset.msg);
                 }
@@ -158,7 +158,7 @@
             f.key.setCustomValidity('');
             // Lỗi của từng ô (rỗng / sai định dạng) -> báo ngay tại ô đó
             if (!form.reportValidity()) return false;
-            // Ràng buộc liên quan key & văn bản -> luôn báo tại ô KEY
+            // Ràng buộc liên quan key -> luôn báo tại ô KEY
             if (typeof crossCheck === 'function') {
                 var msg = crossCheck(f.text.value, f.key.value);
                 if (msg) { f.key.setCustomValidity(msg); f.key.reportValidity(); return false; }

@@ -1,250 +1,1015 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Thực hành An toàn thông tin nâng cao</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài kiểm tra BMTT nâng cao</title>
     <style>
         :root {
-            --bg: #0b1120;
-            --card: #16213a;
-            --card-hover: #1c2a48;
-            --line: #25344f;
-            --text: #e8edf7;
-            --muted: #94a3c4;
-            --accent: #f5b841;
-            --accent-soft: rgba(245, 184, 65, 0.12);
-            --cyan: #3dd6c4;
+            --page-bg: #edf1f7;
+            --main: #0f172a;
+            --text: #253047;
+            --muted: #667085;
+            --line: #cfd8e5;
+            --soft-line: #dce4ef;
+            --card: #f8fafc;
+            --white: #ffffff;
+            --blue: #0ea5e9;
+            --blue-dark: #0b77be;
+            --green: #12b981;
+            --green-soft: #d8f8e5;
+            --green-line: #95e2b7;
+            --purple: #6c5ce7;
+            --red: #ef4444;
+            --red-soft: #ffe4e6;
+            --shadow: 0 10px 28px rgba(15, 23, 42, .08);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            color: var(--text);
-            background:
-                radial-gradient(1100px 600px at 85% -10%, rgba(61, 214, 196, 0.10), transparent 60%),
-                radial-gradient(900px 500px at 5% 110%, rgba(245, 184, 65, 0.10), transparent 60%),
-                var(--bg);
+            margin: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 20px;
-            position: relative;
-            overflow-x: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--page-bg);
+            color: var(--text);
+            padding: 18px 12px 36px;
         }
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--line) 1px, transparent 1px);
-            background-size: 46px 46px;
-            opacity: 0.18;
-            -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 40%, transparent 100%);
-            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 40%, transparent 100%);
-            pointer-events: none;
-        }
-        .shell {
-            width: 100%;
-            max-width: 860px;
-            position: relative;
-            z-index: 1;
-            animation: rise 0.7s cubic-bezier(.2,.7,.2,1) both;
+        .page {
+            width: min(1120px, 100%);
+            margin: 0 auto;
         }
         .topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            padding: 14px 20px;
-            background: rgba(22, 33, 58, 0.6);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            backdrop-filter: blur(8px);
-            margin-bottom: 30px;
+            background: var(--white);
+            border: 1px solid var(--soft-line);
+            border-radius: 18px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
         }
-        .topbar img { height: 38px; width: auto; display: block; }
-        .badge-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12.5px;
-            color: var(--muted);
-            text-align: right;
-            line-height: 1.5;
-        }
-        .badge-id b { color: var(--text); font-weight: 700; }
-        .badge-id span { color: var(--accent); }
-        .hero { text-align: center; margin-bottom: 14px; }
-        .eyebrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            letter-spacing: 0.32em;
-            text-transform: uppercase;
-            color: var(--cyan);
-            display: inline-block;
-            padding: 6px 14px;
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            background: rgba(61, 214, 196, 0.06);
-            margin-bottom: 22px;
-        }
-        .hero h1 {
-            font-family: 'Lora', serif;
-            font-weight: 700;
-            font-size: clamp(28px, 5vw, 44px);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-        }
-        .hero h1 .glow { color: var(--accent); }
-        .hero p.sub {
-            color: var(--muted);
-            margin-top: 14px;
-            font-size: 15.5px;
-            max-width: 540px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-top: 40px;
-        }
-        @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
-        .card {
-            position: relative;
+        .brand {
             display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 22px;
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            text-decoration: none;
-            color: inherit;
-            overflow: hidden;
-            transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
-            opacity: 0;
-            animation: rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+            align-items: center;
+            gap: 12px;
         }
-        .card:nth-child(1) { animation-delay: .10s; }
-        .card:nth-child(2) { animation-delay: .18s; }
-        .card:nth-child(3) { animation-delay: .26s; }
-        .card:nth-child(4) { animation-delay: .34s; }
-        .card::after {
-            content: "";
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 3px;
-            background: var(--accent);
-            transform: scaleY(0);
-            transform-origin: top;
-            transition: transform .25s ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            background: var(--card-hover);
-            border-color: var(--accent);
-            box-shadow: 0 18px 40px -22px rgba(245, 184, 65, 0.5);
-        }
-        .card:hover::after { transform: scaleY(1); }
-        .glyph {
-            flex: none;
-            width: 48px;
-            height: 48px;
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: grid;
             place-items: center;
-            border-radius: 12px;
-            background: var(--accent-soft);
-            border: 1px solid rgba(245, 184, 65, 0.25);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
+            font-weight: 900;
+            color: #0b5b8a;
+            background: linear-gradient(135deg, #dff5ff, #bbf7d0);
+            border: 1px solid #b5e8f8;
+        }
+        .brand h1 {
             font-size: 20px;
-            color: var(--accent);
+            line-height: 1.2;
+            margin: 0 0 3px;
+            color: var(--main);
         }
-        .card-body h3 {
-            font-family: 'Lora', serif;
-            font-size: 19px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .card-body p {
+        .brand p, .student p {
+            margin: 0;
+            font-size: 13px;
             color: var(--muted);
-            font-size: 13.5px;
-            line-height: 1.55;
         }
-        .card .arrow {
-            position: absolute;
-            right: 18px;
-            top: 20px;
+        .student {
+            text-align: right;
+            line-height: 1.45;
+            font-size: 14px;
+            color: var(--main);
+        }
+        .student b { color: #0b77be; }
+
+        .section {
+            background: var(--white);
+            border: 1px solid var(--soft-line);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            margin-top: 14px;
+        }
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .section-title h2 {
+            margin: 0 0 5px;
+            color: var(--main);
+            font-size: 20px;
+            line-height: 1.25;
+        }
+        .section-title p {
+            margin: 0;
             color: var(--muted);
-            transition: transform .25s ease, color .25s ease;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.45;
         }
-        .card:hover .arrow { transform: translateX(4px); color: var(--accent); }
+        .badge {
+            flex: 0 0 auto;
+            border: 1px solid #a7f3d0;
+            background: #dcfce7;
+            color: #047857;
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .crypto-btn {
+            border: 1px solid var(--line);
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: left;
+            cursor: pointer;
+            min-height: 118px;
+            transition: .18s ease;
+        }
+        .crypto-btn:hover {
+            transform: translateY(-3px);
+            border-color: #7dd3fc;
+            box-shadow: 0 10px 25px rgba(14, 165, 233, .13);
+        }
+        .crypto-btn .icon {
+            width: 32px;
+            height: 32px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 10px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        .crypto-btn h3 {
+            margin: 0 0 6px;
+            color: var(--main);
+            font-size: 16px;
+        }
+        .crypto-btn p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        /* Steganography UI giống mẫu ảnh người dùng gửi */
+        .stego-section {
+            padding: 18px 20px 20px;
+            border-radius: 20px;
+        }
+        .stego-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .stego-panel {
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--main);
+            margin: 0 0 12px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .number {
+            width: 20px;
+            height: 20px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 5px;
+            background: var(--blue-dark);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 900;
+        }
+        .form-group { margin-bottom: 13px; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #344054;
+        }
+        .note {
+            margin: -2px 0 8px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #667085;
+        }
+        input[type="file"], input[type="text"], textarea {
+            width: 100%;
+            border: 1px solid #b8c4d4;
+            border-radius: 10px;
+            background: var(--white);
+            padding: 10px 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            outline: none;
+            font-size: 13px;
+        }
+        input[type="file"] { padding: 8px 10px; }
+        textarea {
+            min-height: 108px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        input:focus, textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, .16);
+        }
+        .preview-box {
+            min-height: 176px;
+            border: 1px solid #d1d9e6;
+            border-radius: 14px;
+            background: var(--white);
+            padding: 10px;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+        .preview-box.result-preview { min-height: 182px; }
+        .preview-empty {
+            width: 100%;
+            min-height: 150px;
+            border: 1px dashed #b7c7dc;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #7b8794;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            background: #f9fbff;
+        }
+        canvas {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .btn-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .btn, .download-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: .16s ease;
+        }
+        .btn:hover, .download-btn:hover { transform: translateY(-1px); filter: brightness(1.04); }
+        .btn-purple { background: var(--purple); color: #fff; }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-light { background: #eef2ff; color: #3730a3; }
+        .download-btn { background: #10b981; color: #fff; }
+        .status {
+            margin: 10px 0 13px;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        .status.success {
+            border: 1px solid var(--green-line);
+            background: var(--green-soft);
+            color: #067647;
+        }
+        .status.error {
+            border: 1px solid #fecdd3;
+            background: var(--red-soft);
+            color: #be123c;
+        }
+        .decoded-output {
+            min-height: 46px;
+            border: 1px dashed #9cc2ff;
+            border-radius: 12px;
+            background: #f2f7ff;
+            color: #315183;
+            padding: 12px;
+            line-height: 1.5;
+            word-break: break-word;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+        .hidden { display: none !important; }
+
         footer {
-            margin-top: 34px;
+            margin: 16px 0 0;
             text-align: center;
             color: var(--muted);
-            font-size: 12.5px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.04em;
+            font-size: 13px;
         }
-        @keyframes rise {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
+
+        /* Popup crypto - giao diện mô phỏng Form .ui của Lab-03 */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: none;
+            place-items: center;
+            padding: 16px;
+            background: rgba(15, 23, 42, .55);
+            overflow: auto;
+        }
+        .modal-backdrop.show { display: grid; }
+        .qt-window {
+            width: min(800px, 96vw);
+            background: #efefef;
+            border: 1px solid #8d8d8d;
+            box-shadow: 0 20px 70px rgba(0,0,0,.35);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .qt-titlebar {
+            height: 28px;
+            background: #ffffff;
+            border-bottom: 1px solid #cfcfcf;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 8px;
+            color: #000;
+            font-size: 13px;
+            user-select: none;
+        }
+        .qt-icon {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #8aa;
+            background: linear-gradient(135deg, #d9f99d, #7dd3fc);
+            display: inline-block;
+        }
+        .qt-titlebar span:nth-child(2) { flex: 1; }
+        .qt-close {
+            width: 40px;
+            height: 26px;
+            border: 0;
+            background: transparent;
+            color: #000;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .qt-close:hover { background: #e81123; color: #fff; }
+        .qt-body {
+            position: relative;
+            min-height: 575px;
+            padding: 8px 50px 34px 50px;
+            background: #efefef;
+            color: #000;
+        }
+        .qt-student {
+            font-size: 12px;
+            color: #000;
+            margin-bottom: 12px;
+        }
+        .qt-form-title {
+            margin: 0 0 18px;
+            text-align: center;
+            font-size: 28px;
+            line-height: 1.2;
+            color: #000;
+            font-weight: 800;
+        }
+        .qt-row {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 10px;
+            align-items: start;
+            margin-bottom: 28px;
+        }
+        .qt-row label {
+            margin: 8px 0 0;
+            display: block;
+            color: #000;
+            font-size: 22px;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+        .qt-input, .qt-textarea {
+            width: 100%;
+            border: 1px solid #8f8f8f;
+            border-radius: 0;
+            background: #fff;
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            outline: none;
+            padding: 8px;
+            box-shadow: none;
+        }
+        .qt-input:focus, .qt-textarea:focus {
+            border-color: #0078d7;
+            box-shadow: 0 0 0 1px #0078d7;
+        }
+        .qt-textarea {
+            min-height: 120px;
+            resize: none;
+        }
+        .qt-input { height: 52px; }
+        .qt-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 22px 126px 0 150px;
+        }
+        .qt-button {
+            min-width: 74px;
+            height: 26px;
+            padding: 2px 14px;
+            border: 1px solid #9d9d9d;
+            border-radius: 0;
+            background: #e6e6e6;
+            color: #000;
+            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+        .qt-button:hover { background: #d8eaff; border-color: #0078d7; }
+        .qt-status {
+            min-height: 24px;
+            margin: -12px 0 0 120px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #006100;
+            white-space: pre-wrap;
+        }
+        .qt-status.error { color: #b00020; }
+        .qt-note {
+            margin: 10px 0 0 120px;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.35;
+        }
+
+        @media (max-width: 950px) {
+            .crypto-grid { grid-template-columns: repeat(2, 1fr); }
+            .stego-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            body { padding: 10px; }
+            .topbar, .section-head { flex-direction: column; }
+            .student { text-align: left; }
+            .crypto-grid, .modal-grid { grid-template-columns: 1fr; }
+            .badge { align-self: flex-start; }
         }
     </style>
 </head>
 <body>
-    <div class="shell">
-        <div class="topbar">
-            <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="HUTECH"/>
-            <div class="badge-id">
-                <b>PHẠM NGUYỄN HOÀNG PHÚC</b><br/>
-                MSSV: <span>2380601746</span>
+    <main class="page">
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo">H</div>
+                <div>
+                    <h1>Bài kiểm tra Bảo mật thông tin nâng cao</h1>
+                    <p>Cryptography Popup Form + Steganography IMG Hidden</p>
+                </div>
+            </div>
+            <div class="student">
+                <strong>{{ full_name }}</strong><br>
+                MSSV: <b>{{ mssv }}</b>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="section-head">
+                <div class="section-title">
+                    <h2>🔐 MỤC 1: Cryptography</h2>
+                    <p>Bấm vào thuật toán để mở Popup Form mã hóa/giải mã. Mỗi popup đều có Họ tên, MSSV và kiểm tra key đúng yêu cầu.</p>
+                </div>
+                <span class="badge">Lab-03 Popup Form</span>
+            </div>
+            <div class="crypto-grid">
+                <button class="crypto-btn" data-algo="caesar">
+                    <span class="icon">C</span>
+                    <h3>Caesar Cipher</h3>
+                    <p>Key là số nguyên từ 1 đến 25.</p>
+                </button>
+                <button class="crypto-btn" data-algo="vigenere">
+                    <span class="icon">V</span>
+                    <h3>Vigenère Cipher</h3>
+                    <p>Key là chuỗi chữ cái A-Z và không dài hơn văn bản.</p>
+                </button>
+                <button class="crypto-btn" data-algo="railfence">
+                    <span class="icon">R</span>
+                    <h3>Rail Fence Cipher</h3>
+                    <p>Key là số rail nguyên, ≥ 2 và nhỏ hơn độ dài văn bản.</p>
+                </button>
+                <button class="crypto-btn" data-algo="playfair">
+                    <span class="icon">P</span>
+                    <h3>Playfair Cipher</h3>
+                    <p>Key là chữ cái A-Z, chữ J được gộp thành I.</p>
+                </button>
+            </div>
+        </section>
+
+        <section class="section stego-section">
+            <div class="section-head">
+                <div class="section-title">
+                    <h2>🖼️ MỤC 2: Steganography</h2>
+                    <p>Load ảnh, nhập nội dung cần giấu, bấm Ẩn Tin. Sau đó dùng ảnh PNG kết quả để Giải Mã.</p>
+                </div>
+                <span class="badge">Lab-05 IMG Hidden</span>
+            </div>
+
+            <div class="stego-grid">
+                <div class="stego-panel">
+                    <h3 class="panel-title"><span class="number">1</span> Ẩn tin trong ảnh</h3>
+
+                    <div class="form-group">
+                        <label for="encodeImageInput">Load hình ảnh cần giấu tin</label>
+                        <input id="encodeImageInput" type="file" accept="image/*" />
+                        <p class="note">Nên dùng JPG/PNG. Ảnh kết quả sẽ được lưu dạng PNG.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="preview-box">
+                            <div id="encodeEmpty" class="preview-empty">Chọn ảnh để xem trước</div>
+                            <canvas id="encodeCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secretMessage">Nội dung cần giấu</label>
+                        <textarea id="secretMessage" placeholder="Nhập nội dung cần ẩn, ví dụ: Anh Kiet"></textarea>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn btn-purple" id="hideBtn" type="button">🔒 Ẩn Tin</button>
+                        <button class="btn btn-light" id="resetEncodeBtn" type="button">Làm mới</button>
+                    </div>
+
+                    <div id="encodeStatus" class="status success hidden"></div>
+
+                    <div class="form-group">
+                        <label>Ảnh sau khi ẩn tin</label>
+                        <div class="preview-box result-preview">
+                            <div id="encodedEmpty" class="preview-empty">Ảnh kết quả sẽ hiển thị ở đây</div>
+                            <canvas id="encodedCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <a id="downloadLink" class="download-btn hidden" download="anh_da_giau_tin.png">⬇️ Tải ảnh kết quả</a>
+                </div>
+
+                <div class="stego-panel">
+                    <h3 class="panel-title"><span class="number">2</span> Giải mã nội dung từ ảnh</h3>
+
+                    <div class="form-group">
+                        <label for="decodeImageInput">Load hình ảnh đã giấu tin</label>
+                        <input id="decodeImageInput" type="file" accept="image/png,image/*" />
+                        <p class="note">Chọn đúng ảnh PNG vừa tải sau khi ẩn tin để giải mã chính xác.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="preview-box">
+                            <div id="decodeEmpty" class="preview-empty">Chọn ảnh đã giấu tin để xem trước</div>
+                            <canvas id="decodeCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn btn-green" id="decodeBtn" type="button">🔍 Giải Mã</button>
+                        <button class="btn btn-light" id="resetDecodeBtn" type="button">Làm mới</button>
+                    </div>
+
+                    <div id="decodeStatus" class="status success hidden"></div>
+
+                    <div class="form-group">
+                        <label>Khu vực hiển thị nội dung sau khi giải mã</label>
+                        <div id="decodedMessage" class="decoded-output">Chưa có nội dung giải mã.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>{{ full_name }} · MSSV {{ mssv }} · Bài kiểm tra BMTT nâng cao</footer>
+    </main>
+
+    <div class="modal-backdrop" id="cryptoModal">
+        <div class="qt-window" role="dialog" aria-modal="true">
+            <div class="qt-titlebar">
+                <span class="qt-icon"></span>
+                <span>MainWindow</span>
+                <button class="qt-close" id="closeModal" aria-label="Đóng">×</button>
+            </div>
+            <div class="qt-body">
+                <div class="qt-student">{{ full_name }}-{{ mssv }}</div>
+                <h2 class="qt-form-title" id="modalTitle">Caesar cipher</h2>
+
+                <div class="qt-row">
+                    <label for="plainText">plain text:</label>
+                    <textarea id="plainText" class="qt-textarea" autocomplete="off"></textarea>
+                </div>
+
+                <div class="qt-row">
+                    <label for="cipherKey">key:</label>
+                    <input id="cipherKey" class="qt-input" type="text" autocomplete="off" />
+                </div>
+
+                <div class="qt-row">
+                    <label for="cipherText">Cipher text:</label>
+                    <textarea id="cipherText" class="qt-textarea" autocomplete="off"></textarea>
+                </div>
+
+                <div id="qtStatus" class="qt-status hidden"></div>
+                <div class="qt-note" id="keyHint"></div>
+
+                <div class="qt-actions">
+                    <button class="qt-button" id="encryptBtn" type="button">Encrypt</button>
+                    <button class="qt-button" id="decryptBtn" type="button">Decrypt</button>
+                </div>
             </div>
         </div>
-
-        <div class="hero">
-            <h1>Bảo mật thông tin nâng cao<br/>
-        </div>
-
-        <div class="grid">
-            <a class="card" href="/caesar">
-                <div class="glyph">C</div>
-                <div class="card-body">
-                    <h3>Caesar Cipher</h3>
-                </div>
-                <span class="arrow">&rarr;</span>
-            </a>
-            <a class="card" href="/vigenere">
-                <div class="glyph">V</div>
-                <div class="card-body">
-                    <h3>Vigen&egrave;re Cipher</h3>
-                </div>
-                <span class="arrow">&rarr;</span>
-            </a>
-            <a class="card" href="/railfence">
-                <div class="glyph">R</div>
-                <div class="card-body">
-                    <h3>RailFence Cipher</h3>
-                </div>
-                <span class="arrow">&rarr;</span>
-            </a>
-            <a class="card" href="/playfair">
-                <div class="glyph">P</div>
-                <div class="card-body">
-                    <h3>Playfair Cipher</h3>
-                </div>
-                <span class="arrow">&rarr;</span>
-            </a>
-        </div>
-
-        <footer>Trường Đại học Công nghệ TP.HCM (HUTECH)</footer>
     </div>
+
+<script>
+const STUDENT_NAME = {{ full_name|tojson }};
+const STUDENT_ID = {{ mssv|tojson }};
+
+const algorithms = {
+    caesar: {
+        title: "Caesar Cipher",
+        desc: "Dịch chuyển từng chữ cái trong bảng chữ cái theo key.",
+        hint: "Chỉ ràng buộc KEY: key là số nguyên từ 1 đến 25. Plain/Cipher text nhập tự do; chữ cái được mã hóa, ký tự khác giữ nguyên.",
+        keyPlaceholder: "VD: 3",
+        textPlaceholder: "VD: Hello 123!",
+        cipherPlaceholder: "VD: Khoor 123!"
+    },
+    vigenere: {
+        title: "Vigenère Cipher",
+        desc: "Mã hóa văn bản bằng một khóa lặp lại theo từng ký tự.",
+        hint: "Chỉ ràng buộc KEY: key là chuỗi chữ cái A-Z, không chứa số/khoảng trắng/ký tự đặc biệt. Plain/Cipher text nhập tự do; chữ cái được mã hóa, ký tự khác giữ nguyên.",
+        keyPlaceholder: "VD: KEY",
+        textPlaceholder: "VD: Hello 123!",
+        cipherPlaceholder: "VD: Rijvs 123!"
+    },
+    railfence: {
+        title: "Rail Fence Cipher",
+        desc: "Sắp xếp văn bản theo dạng hàng rào zig-zag rồi đọc theo từng rail.",
+        hint: "Chỉ ràng buộc KEY: key là số rail nguyên, key ≥ 2 và key phải nhỏ hơn số ký tự của văn bản. Plain/Cipher text nhập tự do.",
+        keyPlaceholder: "VD: 3",
+        textPlaceholder: "VD: Hello HUTECH 123!",
+        cipherPlaceholder: ""
+    },
+    playfair: {
+        title: "Playfair Cipher",
+        desc: "Mã hóa từng cặp ký tự bằng ma trận 5x5.",
+        hint: "Chỉ ràng buộc KEY: key là chữ cái A-Z. Plain/Cipher text nhập tự do; thuật toán tự lấy chữ cái A-Z, bỏ ký tự khác và gộp J thành I.",
+        keyPlaceholder: "VD: MONARCHY",
+        textPlaceholder: "VD: Hello World 123!",
+        cipherPlaceholder: "VD: CFSUPMVNMT"
+    }
+};
+
+let currentAlgo = "caesar";
+const modal = document.getElementById("cryptoModal");
+const modalTitle = document.getElementById("modalTitle");
+const keyHint = document.getElementById("keyHint");
+const plainText = document.getElementById("plainText");
+const cipherText = document.getElementById("cipherText");
+const cipherKey = document.getElementById("cipherKey");
+const qtStatus = document.getElementById("qtStatus");
+
+function formatTitle(title) {
+    if (title === "Caesar Cipher") return "Caesar cipher";
+    if (title === "Vigenère Cipher") return "Vigenère cipher";
+    if (title === "Rail Fence Cipher") return "Rail Fence cipher";
+    if (title === "Playfair Cipher") return "Playfair cipher";
+    return title;
+}
+
+function openCryptoModal(algo) {
+    currentAlgo = algo;
+    const item = algorithms[algo];
+    modalTitle.textContent = formatTitle(item.title);
+    keyHint.textContent = item.hint;
+    plainText.placeholder = "";
+    cipherText.placeholder = "";
+    cipherKey.placeholder = item.keyPlaceholder;
+    plainText.value = "";
+    cipherText.value = "";
+    cipherKey.value = "";
+    clearQtStatus();
+    modal.classList.add("show");
+    setTimeout(() => plainText.focus(), 80);
+}
+
+document.querySelectorAll(".crypto-btn").forEach(btn => {
+    btn.addEventListener("click", () => openCryptoModal(btn.dataset.algo));
+});
+
+document.getElementById("closeModal").addEventListener("click", () => modal.classList.remove("show"));
+modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("show"); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") modal.classList.remove("show"); });
+
+function clearQtStatus() {
+    qtStatus.textContent = "";
+    qtStatus.className = "qt-status hidden";
+}
+
+function showQtStatus(type, content) {
+    qtStatus.textContent = content;
+    qtStatus.className = type === "error" ? "qt-status error" : "qt-status";
+}
+
+function localValidate(algo, text, key, mode) {
+    // Chỉ kiểm tra KEY. Không ràng buộc Plain text / Cipher text.
+    if (!key.trim()) return "Vui lòng nhập key.";
+    if (algo === "caesar") {
+        if (!/^\d+$/.test(key) || Number(key) < 1 || Number(key) > 25) return "Key Caesar phải là số nguyên từ 1 đến 25.";
+    }
+    if (algo === "vigenere") {
+        if (!/^[A-Za-z]+$/.test(key)) return "Key Vigenere chỉ được chứa chữ cái A-Z, không chứa số/ký tự đặc biệt và không được để trống.";
+        if (key.length > text.length) return `Key Vigenere không được dài hơn văn bản hiện tại (${text.length} ký tự).`;
+    }
+    if (algo === "railfence") {
+        if (!/^\d+$/.test(key)) return "Key Rail Fence phải là số nguyên.";
+        if (Number(key) < 2) return "Key Rail Fence phải >= 2.";
+        if (Number(key) >= text.length) return `Key Rail Fence phải nhỏ hơn số ký tự của văn bản hiện tại (${text.length}).`;
+    }
+    if (algo === "playfair") {
+        if (!/^[A-Za-z]+$/.test(key)) return "Key Playfair phải là chuỗi chữ cái A-Z.";
+    }
+    return "";
+}
+
+async function runCrypto(mode) {
+    const isEncrypt = mode === "encrypt";
+    const text = isEncrypt ? plainText.value : cipherText.value;
+    const key = cipherKey.value;
+    const localError = localValidate(currentAlgo, text, key, mode);
+    if (localError) {
+        showQtStatus("error", localError);
+        return;
+    }
+    try {
+        const res = await fetch(`/crypto/${currentAlgo}/${mode}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, key })
+        });
+        const data = await res.json();
+        if (!data.ok) {
+            showQtStatus("error", data.error || "Không xử lý được dữ liệu.");
+            return;
+        }
+        if (isEncrypt) {
+            cipherText.value = data.result;
+            showQtStatus("success", "Encrypt thành công.");
+        } else {
+            plainText.value = data.result;
+            showQtStatus("success", "Decrypt thành công.");
+        }
+        if (data.matrix) {
+            showQtStatus("success", "Xử lý thành công.\nMa trận Playfair:\n" + data.matrix.map(r => r.join(" ")).join("\n"));
+        }
+    } catch (err) {
+        showQtStatus("error", "Lỗi kết nối: " + err.message);
+    }
+}
+
+document.getElementById("encryptBtn").addEventListener("click", () => runCrypto("encrypt"));
+document.getElementById("decryptBtn").addEventListener("click", () => runCrypto("decrypt"));
+
+// =========================
+// Steganography LSB
+// 32 bit đầu lưu độ dài message theo byte, sau đó lưu UTF-8 message.
+// Bit được giấu vào bit cuối kênh R/G/B, bỏ qua Alpha.
+// =========================
+const encodeImageInput = document.getElementById("encodeImageInput");
+const decodeImageInput = document.getElementById("decodeImageInput");
+const secretMessage = document.getElementById("secretMessage");
+const encodeCanvas = document.getElementById("encodeCanvas");
+const encodedCanvas = document.getElementById("encodedCanvas");
+const decodeCanvas = document.getElementById("decodeCanvas");
+const encodeCtx = encodeCanvas.getContext("2d", { willReadFrequently: true });
+const encodedCtx = encodedCanvas.getContext("2d", { willReadFrequently: true });
+const decodeCtx = decodeCanvas.getContext("2d", { willReadFrequently: true });
+const encodeEmpty = document.getElementById("encodeEmpty");
+const encodedEmpty = document.getElementById("encodedEmpty");
+const decodeEmpty = document.getElementById("decodeEmpty");
+const encodeStatus = document.getElementById("encodeStatus");
+const decodeStatus = document.getElementById("decodeStatus");
+const decodedMessage = document.getElementById("decodedMessage");
+const downloadLink = document.getElementById("downloadLink");
+let encodeLoaded = false;
+let decodeLoaded = false;
+
+function showStatus(target, type, msg) {
+    target.className = `status ${type === "error" ? "error" : "success"}`;
+    target.textContent = msg;
+    target.classList.remove("hidden");
+}
+
+function clearStatus(target) {
+    target.classList.add("hidden");
+    target.textContent = "";
+}
+
+function showCanvas(canvas, emptyBox) {
+    canvas.style.display = "block";
+    emptyBox.style.display = "none";
+}
+
+function hideCanvas(canvas, emptyBox) {
+    canvas.style.display = "none";
+    emptyBox.style.display = "grid";
+}
+
+function loadImageToCanvas(input, canvas, ctx, emptyBox, done) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            showCanvas(canvas, emptyBox);
+            if (done) done(img, file);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+encodeImageInput.addEventListener("change", function () {
+    clearStatus(encodeStatus);
+    loadImageToCanvas(this, encodeCanvas, encodeCtx, encodeEmpty, function () {
+        encodeLoaded = true;
+        downloadLink.classList.add("hidden");
+        hideCanvas(encodedCanvas, encodedEmpty);
+    });
+});
+
+decodeImageInput.addEventListener("change", function () {
+    clearStatus(decodeStatus);
+    decodedMessage.textContent = "Chưa có nội dung giải mã.";
+    loadImageToCanvas(this, decodeCanvas, decodeCtx, decodeEmpty, function () {
+        decodeLoaded = true;
+    });
+});
+
+function bytesToBits(bytes) {
+    const bits = [];
+    for (const byte of bytes) {
+        for (let i = 7; i >= 0; i--) bits.push((byte >> i) & 1);
+    }
+    return bits;
+}
+
+function numberTo32Bits(num) {
+    const bits = [];
+    for (let i = 31; i >= 0; i--) bits.push((num >> i) & 1);
+    return bits;
+}
+
+function bitsToNumber(bits) {
+    let num = 0;
+    for (const bit of bits) num = (num << 1) | bit;
+    return num >>> 0;
+}
+
+document.getElementById("hideBtn").addEventListener("click", function () {
+    if (!encodeLoaded) {
+        showStatus(encodeStatus, "error", "Vui lòng load ảnh trước khi ẩn tin.");
+        return;
+    }
+    const message = secretMessage.value;
+    if (!message.trim()) {
+        showStatus(encodeStatus, "error", "Vui lòng nhập nội dung cần giấu.");
+        return;
+    }
+
+    const bytes = new TextEncoder().encode(message);
+    const payloadBits = [...numberTo32Bits(bytes.length), ...bytesToBits(bytes)];
+    const imageData = encodeCtx.getImageData(0, 0, encodeCanvas.width, encodeCanvas.height);
+    const data = imageData.data;
+    const capacity = Math.floor(data.length / 4) * 3;
+
+    if (payloadBits.length > capacity) {
+        showStatus(encodeStatus, "error", `Ảnh không đủ dung lượng. Cần ${payloadBits.length} bit nhưng ảnh chỉ chứa được ${capacity} bit.`);
+        return;
+    }
+
+    let bitIndex = 0;
+    for (let i = 0; i < data.length && bitIndex < payloadBits.length; i++) {
+        if ((i + 1) % 4 === 0) continue;
+        data[i] = (data[i] & 254) | payloadBits[bitIndex];
+        bitIndex++;
+    }
+
+    encodedCanvas.width = encodeCanvas.width;
+    encodedCanvas.height = encodeCanvas.height;
+    encodedCtx.putImageData(imageData, 0, 0);
+    showCanvas(encodedCanvas, encodedEmpty);
+
+    const pngUrl = encodedCanvas.toDataURL("image/png");
+    downloadLink.href = pngUrl;
+    downloadLink.classList.remove("hidden");
+    showStatus(encodeStatus, "success", "Ẩn tin thành công. Hãy tải ảnh kết quả PNG để giải mã sau.");
+
+    // Cho phép bấm Giải mã ngay bằng ảnh kết quả vừa tạo mà chưa cần tải lại.
+    decodeCanvas.width = encodedCanvas.width;
+    decodeCanvas.height = encodedCanvas.height;
+    decodeCtx.clearRect(0, 0, decodeCanvas.width, decodeCanvas.height);
+    decodeCtx.drawImage(encodedCanvas, 0, 0);
+    showCanvas(decodeCanvas, decodeEmpty);
+    decodeLoaded = true;
+});
+
+document.getElementById("decodeBtn").addEventListener("click", function () {
+    if (!decodeLoaded) {
+        showStatus(decodeStatus, "error", "Vui lòng load ảnh đã giấu tin trước khi giải mã.");
+        return;
+    }
+
+    const imageData = decodeCtx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
+    const data = imageData.data;
+    const bits = [];
+    for (let i = 0; i < data.length; i++) {
+        if ((i + 1) % 4 === 0) continue;
+        bits.push(data[i] & 1);
+    }
+
+    if (bits.length < 32) {
+        showStatus(decodeStatus, "error", "Ảnh quá nhỏ, không thể đọc dữ liệu.");
+        return;
+    }
+
+    const length = bitsToNumber(bits.slice(0, 32));
+    const totalNeeded = 32 + length * 8;
+    if (length <= 0 || totalNeeded > bits.length || length > 1000000) {
+        decodedMessage.textContent = "Không tìm thấy nội dung hợp lệ trong ảnh này.";
+        showStatus(decodeStatus, "error", "Ảnh hiện tại chưa có dữ liệu giấu tin theo định dạng của chương trình.");
+        return;
+    }
+
+    const bytes = [];
+    for (let i = 32; i < totalNeeded; i += 8) {
+        bytes.push(bitsToNumber(bits.slice(i, i + 8)));
+    }
+
+    try {
+        const message = new TextDecoder().decode(new Uint8Array(bytes));
+        decodedMessage.textContent = message;
+        showStatus(decodeStatus, "success", "Giải mã ảnh thành công.");
+    } catch (err) {
+        decodedMessage.textContent = "Không giải mã được dữ liệu.";
+        showStatus(decodeStatus, "error", err.message);
+    }
+});
+
+document.getElementById("resetEncodeBtn").addEventListener("click", function () {
+    encodeImageInput.value = "";
+    secretMessage.value = "";
+    encodeLoaded = false;
+    hideCanvas(encodeCanvas, encodeEmpty);
+    hideCanvas(encodedCanvas, encodedEmpty);
+    downloadLink.classList.add("hidden");
+    clearStatus(encodeStatus);
+});
+
+document.getElementById("resetDecodeBtn").addEventListener("click", function () {
+    decodeImageInput.value = "";
+    decodeLoaded = false;
+    hideCanvas(decodeCanvas, decodeEmpty);
+    decodedMessage.textContent = "Chưa có nội dung giải mã.";
+    clearStatus(decodeStatus);
+});
+</script>
 </body>
 </html>
