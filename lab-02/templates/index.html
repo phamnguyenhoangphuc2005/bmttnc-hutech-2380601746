@@ -561,7 +561,7 @@
 
                     <div class="form-group">
                         <label for="secretMessage">Nội dung cần giấu</label>
-                        <textarea id="secretMessage" placeholder="Nhập nội dung cần ẩn, ví dụ: Anh Kiet"></textarea>
+                        <textarea id="secretMessage" placeholder="Nhập nội dung cần ẩn, ví dụ: HoangPhuc"></textarea>
                     </div>
 
                     <div class="btn-row">
@@ -654,8 +654,8 @@
     </div>
 
 <script>
-const STUDENT_NAME = {{ full_name|tojson }};
-const STUDENT_ID = {{ mssv|tojson }};
+const STUDENT_NAME = "{{ full_name }}";
+const STUDENT_ID = "{{ mssv }}";
 
 const algorithms = {
     caesar: {
